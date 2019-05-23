@@ -28,7 +28,6 @@ export default class SearchBar extends React.Component<SearchBarProps, SearchBar
       return;
     }
     this.setState({searchKey: value});
-    console.log('Search');
     const repos = await travisRepos(value);
     this.props.setRepos(repos);
   }

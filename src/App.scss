@@ -6,6 +6,7 @@
 @import '~@material/react-list/index.scss';
 @import '~@material/react-card/index.scss';
 @import '~@material/react-text-field/index.scss';
+@import '~@material/react-typography/index.scss';
 @import "Travis";
 
 // refer to element in Javascript portion below
@@ -52,7 +53,6 @@
 
 span.no-results {
   padding-top: 32px;
-  font-size: 18px;
   justify-content: center;
   align-items: center;
   opacity: 0.6;
