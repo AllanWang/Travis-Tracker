@@ -1,6 +1,7 @@
 import {travisRepos} from "./travis";
+import * as util from "util";
 
-test('test', async () => {
+test('travis repos', async () => {
   const s = await travisRepos('AllanWang');
-  console.log(s)
+  console.log(util.inspect(s, {depth: null}))
 });

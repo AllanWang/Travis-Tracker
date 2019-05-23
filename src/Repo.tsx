@@ -2,9 +2,18 @@ import React, {Component} from 'react';
 import List, {ListItem, ListItemGraphic, ListItemMeta, ListItemText} from '@material/react-list';
 import Checkbox from '@material/react-checkbox';
 import MaterialIcon from "@material/react-material-icon";
+import {Repositories} from "./travis_api";
 
-export interface ReposProps {
+export class ReposProps {
   repos: ListItemRepoProps[];
+
+  constructor(repos: ListItemRepoProps[] | Repositories) {
+    if (repos instanceof Repositories) {
+      this.repos = repos.repositories.map(r => ({name: r.owner.name, repo: r.name}));
+    } else {
+      this.repos = repos;
+    }
+  }
 }
 
 const repoKey = ({name, repo}: ListItemRepoProps) => `repo/${name}/${repo}`;
