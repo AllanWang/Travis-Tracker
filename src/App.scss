@@ -1,17 +1,30 @@
 @import '~@material/react-button/index.scss';
+@import '~@material/react-material-icon/index.scss';
+@import '~@material/react-ripple/index.scss';
+@import '~@material/ripple/mdc-ripple.scss';
+@import '~@material/react-layout-grid/index.scss';
+@import '~@material/react-list/index.scss';
+
+// refer to element in Javascript portion below
+.ripple-icon-component {
+  @include mdc-ripple-surface;
+  @include mdc-ripple-radius-bounded;
+  @include mdc-states;
+  overflow: hidden;
+}
 
 .App {
   text-align: center;
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
+  //animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
   pointer-events: none;
 }
 
 .App-header {
-  background-color: #282c34;
+  //background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
