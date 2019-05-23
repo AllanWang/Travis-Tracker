@@ -1,7 +1,13 @@
 {
   "name": "travis-tracker",
-  "version": "0.1.0",
-  "private": true,
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">= 4"
+  },
+  "author": "Allan Wang <me@allanwang.ca>",
+  "license": "Apache-2.0",
+  "repository": "https://github.com/AllanWang/Travis-Tracker",
   "dependencies": {
     "@types/jest": "24.0.13",
     "@types/node": "12.0.2",
