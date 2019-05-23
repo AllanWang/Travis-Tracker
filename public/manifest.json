@@ -1,15 +1,11 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "name": "Travis Tracker",
+  "version": "0.0.1",
+  "description": "Easily view travis build statuses.",
+  "permissions": ["storage"],
+  "browser_action": {
+    "default_title": "Travis Tracker",
+    "default_popup": "index.html"
+  },
+  "manifest_version": 2
 }
