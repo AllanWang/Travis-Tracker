@@ -38,8 +38,6 @@ class TravisBase {
  */
 @JsonObject("User")
 export class User extends TravisBase {
-  @JsonProperty("name", String)
-  name!: string;
   @JsonProperty("login", String)
   login!: string;
 }

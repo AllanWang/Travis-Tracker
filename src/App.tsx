@@ -2,9 +2,15 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.scss';
 import Repos, {ReposProps} from "./Repo";
+import {library} from '@fortawesome/fontawesome-svg-core'
+import {fas} from '@fortawesome/free-solid-svg-icons'
+import {fab} from '@fortawesome/free-brands-svg-icons'
+import SearchBar from "./SearchBar";
+
+library.add(fas, fab);
 
 const testRepos: ReposProps = {
-  repos: [{name: 'AllanWang', repo: 'KAU'}, {name: 'AllanWang', repo: 'Test'}, {name: 'AllanWang', repo: 'Hello'}]
+  repos: [{owner: 'AllanWang', repo: 'KAU'}, {owner: 'AllanWang', repo: 'Test'}, {owner: 'AllanWang', repo: 'Hello'}]
 };
 
 const App: React.FC = () => {
@@ -23,6 +29,7 @@ const App: React.FC = () => {
         >
           Learn React
         </a>
+        <SearchBar/>
         <Repos {...testRepos}/>
         {/*<MaterialIcon icon='add' hasRipple={true}>Click Me </MaterialIcon>*/}
       </header>

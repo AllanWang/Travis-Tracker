@@ -1,24 +1,24 @@
-import React, {Component} from 'react';
+import React from 'react';
 import List, {ListItem, ListItemGraphic, ListItemMeta, ListItemText} from '@material/react-list';
 import Checkbox from '@material/react-checkbox';
-import MaterialIcon from "@material/react-material-icon";
 import {Repositories} from "./travis_api";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export class ReposProps {
   repos: ListItemRepoProps[];
 
   constructor(repos: ListItemRepoProps[] | Repositories) {
     if (repos instanceof Repositories) {
-      this.repos = repos.repositories.map(r => ({name: r.owner.name, repo: r.name}));
+      this.repos = repos.repositories.map(r => ({owner: r.owner.login, repo: r.name}));
     } else {
       this.repos = repos;
     }
   }
 }
 
-const repoKey = ({name, repo}: ListItemRepoProps) => `repo/${name}/${repo}`;
+const repoKey = ({owner, repo}: ListItemRepoProps) => `repo/${owner}/${repo}`;
 
-export class Repos extends Component<ReposProps> {
+export default class Repos extends React.Component<ReposProps> {
 
   state = {
     selectedIndex: [1],
@@ -46,26 +46,25 @@ export class Repos extends Component<ReposProps> {
 }
 
 export interface ListItemRepoProps {
-  name: string;
+  owner: string;
   repo: string;
   checked?: boolean;
 }
 
-export const ListItemRepo: React.FunctionComponent<ListItemRepoProps> = ({name, repo, checked}) => {
+export const ListItemRepo: React.FunctionComponent<ListItemRepoProps> = ({owner, repo, checked}) => {
 
   const blankTarget = {target: '_blank', rel: 'noopener noreferrer'};
 
   const userA = <a {...blankTarget}
-                   href={`https://github.com/${name}`}>{name}</a>;
+                   href={`https://github.com/${owner}`}>{owner}</a>;
+  // TODO verify that this works for organizations
   const repoA = <a {...blankTarget}
-                   href={`https://github.com/${name}/${repo}`}>{repo}</a>;
+                   href={`https://github.com/${owner}/${repo}`}>{repo}</a>;
   return (
     <ListItem>
-      <ListItemGraphic graphic={<MaterialIcon icon='public'/>}/>
+      <ListItemGraphic graphic={<FontAwesomeIcon color='black' icon={['fab', 'github']}/>}/>
       <ListItemText primaryText={<div>{userA}/{repoA}</div>}/>
       <ListItemMeta meta={<Checkbox checked={checked}/>}/>
     </ListItem>
   );
 };
-
-export default Repos

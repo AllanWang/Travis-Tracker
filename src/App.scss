@@ -4,6 +4,9 @@
 @import '~@material/ripple/mdc-ripple.scss';
 @import '~@material/react-layout-grid/index.scss';
 @import '~@material/react-list/index.scss';
+@import '~@material/react-card/index.scss';
+@import '~@material/react-text-field/index.scss';
+
 
 // refer to element in Javascript portion below
 .ripple-icon-component {
@@ -31,7 +34,7 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  //color: white;
 }
 
 .App-link {
