@@ -5,21 +5,24 @@ const jsonConvert = new JsonConvert();
 
 const travisCom = "https://api.travis-ci.com";
 
-const travisFetch = (segment: string, init?: RequestInit): Promise<any> => fetch(`${travisCom}/${segment}`, {
+/**
+ * For testing, see https://developer.travis-ci.com/explore/#explorer
+ */
+const travisFetch = (segment: string, init?: RequestInit, log?: boolean): Promise<any> => fetch(`${travisCom}/${segment}`, {
   ...init,
   headers: {
-    'Travis-API-Version': '3',
-    'Authorization': 'token JULutz8831jwTbJgfzRifQ'
+    'Travis-API-Version': '3'
   }
-}).then(response => response.json())
-  .then(s => {
-    console.log(s);
-    return s
-  });
-
+}).then(response => {
+  const json = response.json();
+  if (log) {
+    console.log(json)
+  }
+  return json;
+});
 
 export const travisRepos = async (owner: string): Promise<Repositories | null> =>
-  travisFetch(`owner/${owner}/repos?sort_by=active:desc,name&limit=100`, {
+  travisFetch(`owner/${owner}/repos?sort_by=default_branch.last_build:desc&limit=100`, {
     method: 'GET'
   }).then(data => data.repositories ? jsonConvert.deserializeObject(data, Repositories) : null);
 

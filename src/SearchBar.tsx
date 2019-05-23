@@ -36,7 +36,8 @@ export default class SearchBar extends React.Component<SearchBarProps, SearchBar
 
     const {value} = this.state;
     return (
-      <TextField label='Repo Search' leadingIcon={<MaterialIcon icon='search'/>}
+      <TextField label='Repo Search'
+                 // leadingIcon={<MaterialIcon icon='search'/>}
                  onTrailingIconSelect={() => this.setState({value: ''})}
                  trailingIcon={<MaterialIcon role='button' icon='close'/>}>
         <Input

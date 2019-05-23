@@ -1,14 +1,15 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.scss';
-import Repos from "./Repo";
 import {library} from '@fortawesome/fontawesome-svg-core'
 import {fas} from '@fortawesome/free-solid-svg-icons'
 import {fab} from '@fortawesome/free-brands-svg-icons'
-import SearchBar from "./SearchBar";
 import {BuildInfo, Repositories, Slug} from "./travis-api";
 import TravisStorage from "./travis-storage";
 import {MapModifier, SetModifier} from "./state-modifier";
+import SearchPanel from "./SearchPanel";
+import TravisToolbar from "./TravisToolbar";
+import {TopAppBarFixedAdjust} from "@material/react-top-app-bar";
+import {TravisPanel} from "./const";
 
 library.add(fas, fab);
 
@@ -16,9 +17,11 @@ interface AppProps {
 }
 
 interface AppState {
-  repos?: Repositories | null
+  panel: TravisPanel
+  repos: Repositories | null
   subscriptions: Set<Slug>
   builds: Map<Slug, BuildInfo>
+  buildsFetching: Set<Slug>
 }
 
 export default class App extends React.Component<AppProps, AppState> {
@@ -29,8 +32,11 @@ export default class App extends React.Component<AppProps, AppState> {
   }
 
   state: AppState = {
+    repos: null,
+    panel: 'search',
     subscriptions: TravisStorage.subscriptions.get(),
-    builds: TravisStorage.builds.get()
+    builds: TravisStorage.builds.get(),
+    buildsFetching: new Set<Slug>()
   };
 
   private setRepos(repos: Repositories | null) {
@@ -61,27 +67,28 @@ export default class App extends React.Component<AppProps, AppState> {
     }
   })(this);
 
+  private buildFetchModifier = new (class extends SetModifier<Slug, AppState> {
+    get(): Set<string> {
+      return this.component.state.buildsFetching;
+    }
+
+    set(data: Set<string>): void {
+      this.component.setState({buildsFetching: data});
+    }
+  })(this);
+
   render() {
-    const {repos, subscriptions} = this.state;
+    const {repos, panel, subscriptions} = this.state;
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo"/>
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          <SearchBar setRepos={this.setRepos}/>
-          <Repos repos={repos} subscriptions={subscriptions} buildModifier={this.buildModifier}
-                 subscriptionModifier={this.subscriptionModifier}/>
-        </header>
+        <TravisToolbar panel={panel} setPanel={() => {
+        }}/>
+        <TopAppBarFixedAdjust>
+          <SearchPanel setRepos={this.setRepos} repos={repos} subscriptions={subscriptions}
+                       buildModifier={this.buildModifier}
+                       subscriptionModifier={this.subscriptionModifier}
+                       buildFetchModifier={this.buildFetchModifier}/>
+        </TopAppBarFixedAdjust>
       </div>
     );
   }
