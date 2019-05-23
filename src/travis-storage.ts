@@ -1,4 +1,4 @@
-import {Build, BuildInfo, Slug} from "./travis-api";
+import {BuildInfo, Slug} from "./travis-api";
 import {JsonConvert} from "json2typescript";
 
 export type TravisStorageKey = 'subscriptions' | 'builds';

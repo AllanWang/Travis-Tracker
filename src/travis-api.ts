@@ -42,16 +42,20 @@ export class User extends TravisBase {
   login!: string;
 }
 
-/**
- * See https://developer.travis-ci.com/resource/repository#Repository
- */
-@JsonObject("Repository")
-export class Repository extends TravisBase {
+@JsonObject("RepositoryMinimal")
+export class RepositoryMinimal extends TravisBase {
   @JsonProperty("name", String)
   name!: string;
   @JsonProperty("slug", String)
   slug!: Slug;
-  @JsonProperty("github_id", Number)
+}
+
+/**
+ * See https://developer.travis-ci.com/resource/repository#Repository
+ */
+@JsonObject("Repository")
+export class Repository extends RepositoryMinimal {
+  @JsonProperty("github_id", Number, true)
   githubId?: number;
   @JsonProperty("github_language", String, true)
   githubLanguage?: string;
@@ -76,11 +80,14 @@ export class Repositories {
  * See https://developer.travis-ci.com/resource/branch#Branch
  */
 @JsonObject("Branch")
-export class Branch extends TravisBase {
+export class Branch {
   @JsonProperty("name", String)
   name!: string;
 }
 
+/**
+ * See https://developer.travis-ci.com/resource/commit#Commit
+ */
 @JsonObject("Commit")
 export class Commit extends TravisBase {
   @JsonProperty("sha", String)
@@ -95,6 +102,9 @@ export class Commit extends TravisBase {
   committedAt!: DateTime;
 }
 
+/**
+ * See https://developer.travis-ci.com/resource/build#Build
+ */
 @JsonObject("Build")
 export class Build extends TravisBase {
   @JsonProperty("number", String)
@@ -117,11 +127,11 @@ export class Build extends TravisBase {
   finished_at?: DateTime;
   @JsonProperty("private", Boolean)
   private!: boolean;
-  @JsonProperty("repository", Repository)
-  repository!: Repository;
+  @JsonProperty("repository", RepositoryMinimal)
+  repository!: RepositoryMinimal;
   @JsonProperty("branch", Branch)
   branch!: Branch;
-  @JsonProperty("tag", String)
+  @JsonProperty("tag", String, true)
   tag?: string;
   @JsonProperty("commit", Commit)
   commit!: Commit;
@@ -137,4 +147,13 @@ export class BuildInfo {
   build!: Build;
   @JsonProperty("fetch_time", Number)
   fetchTime!: number;
+}
+
+/**
+ * See https://developer.travis-ci.com/resource/builds#Builds
+ */
+@JsonObject("Builds")
+export class Builds {
+  @JsonProperty("builds", [Build])
+  builds!: Build[]
 }
