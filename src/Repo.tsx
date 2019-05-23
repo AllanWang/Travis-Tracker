@@ -16,16 +16,21 @@ export class Repos extends Component<ReposProps> {
   };
 
   render() {
+    const {selectedIndex} = this.state;
     return (
       <List
         checkboxList
-        selectedIndex={this.state.selectedIndex}
-        handleSelect={(activatedItemIndex, allSelected) => {
+        selectedIndex={selectedIndex}
+        handleSelect={(_, allSelected) => {
           console.log(allSelected);
           this.setState({selectedIndex: allSelected})
         }}
         style={{width: '600px'}}
-      > {this.props.repos.map((r, i) => <ListItemRepo {...r} key={repoKey(r)}/>)}
+      > {this.props.repos
+      // While type is MDCListIndex, it appears to always be an array for checkbox lists
+      // See isIndexValid_(index: MDCListIndex)
+        .map((r, i) => ({...r, checked: selectedIndex.includes(i)}))
+        .map(r => <ListItemRepo {...r} key={repoKey(r)}/>)}
       </List>
     );
   }
@@ -34,9 +39,10 @@ export class Repos extends Component<ReposProps> {
 export interface ListItemRepoProps {
   name: string;
   repo: string;
+  checked?: boolean;
 }
 
-export const ListItemRepo: React.FunctionComponent<ListItemRepoProps> = ({name, repo}) => {
+export const ListItemRepo: React.FunctionComponent<ListItemRepoProps> = ({name, repo, checked}) => {
 
   const blankTarget = {target: '_blank', rel: 'noopener noreferrer'};
 
@@ -48,7 +54,7 @@ export const ListItemRepo: React.FunctionComponent<ListItemRepoProps> = ({name, 
     <ListItem>
       <ListItemGraphic graphic={<MaterialIcon icon='public'/>}/>
       <ListItemText primaryText={<div>{userA}/{repoA}</div>}/>
-      <ListItemMeta meta={<Checkbox/>}/>
+      <ListItemMeta meta={<Checkbox checked={checked}/>}/>
     </ListItem>
   );
 };
