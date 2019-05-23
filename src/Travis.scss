@@ -1,0 +1,19 @@
+@mixin build-theme($name, $color, $accent) {
+  .travis-build-#{$name} {
+    .build-theme {
+      color: $color;
+    }
+    .build-theme-bg {
+      background-color: $accent;
+    }
+    .build-theme-indicator {
+      border-left: 6px solid $accent;
+    }
+  }
+}
+
+@include build-theme(passed, #38AA56, #38AA56);
+@include build-theme(started, #CDB52B, #EDDE3E);
+@include build-theme(errored, #DB4545, #DB4545);
+@include build-theme(unknown, #9D9D9D, #9D9D9D);
+@include build-theme(canceled, #9D9D9D, #9D9D9D);

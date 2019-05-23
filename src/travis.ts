@@ -3,7 +3,7 @@ import {JsonConvert} from "json2typescript";
 
 const jsonConvert = new JsonConvert();
 
-export const travisCom = "https://api.travis-ci.com";
+const travisCom = "https://api.travis-ci.com";
 
 export const travisRepos = async (owner: string): Promise<Repositories> => fetch(`${travisCom}/owner/${owner}/repos`, {
   method: 'GET',

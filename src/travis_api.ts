@@ -1,10 +1,10 @@
 import {JsonConverter, JsonCustomConvert, JsonObject, JsonProperty} from "json2typescript";
 
-declare type Slug = string
+export type Slug = string
 
-declare type DateTime = string
+export type DateTime = string
 
-declare type TravisState = 'started' | 'passed' | 'errored' | 'failed' | 'canceled'
+export type TravisState = 'started' | 'passed' | 'errored' | 'failed' | 'canceled'
 
 @JsonConverter
 class TravisStateConverter implements JsonCustomConvert<TravisState> {
