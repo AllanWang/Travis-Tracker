@@ -2,7 +2,7 @@ import React, {FormEvent, KeyboardEvent} from 'react';
 import TextField, {Input} from "@material/react-text-field";
 import MaterialIcon from "@material/react-material-icon";
 import {travisRepos} from "./travis";
-import {Repositories} from "./travis_api";
+import {Repositories} from "./travis-api";
 
 export interface SearchBarProps {
   setRepos: (repos: Repositories | null) => void

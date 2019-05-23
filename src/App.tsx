@@ -6,7 +6,8 @@ import {library} from '@fortawesome/fontawesome-svg-core'
 import {fas} from '@fortawesome/free-solid-svg-icons'
 import {fab} from '@fortawesome/free-brands-svg-icons'
 import SearchBar from "./SearchBar";
-import {Build, Repositories, Slug} from "./travis_api";
+import {Build, Repositories, Slug} from "./travis-api";
+import TravisStorage from "./travis-storage";
 
 library.add(fas, fab);
 
@@ -29,7 +30,7 @@ export default class App extends React.Component<AppProps, AppState> {
   }
 
   state: AppState = {
-    subscriptions: new Set<Slug>(),
+    subscriptions: TravisStorage.getSubscriptions(),
     builds: {}
   };
 
@@ -46,6 +47,7 @@ export default class App extends React.Component<AppProps, AppState> {
     }
     subscriptions = new Set(subscriptions);
     subscriptions.add(slug);
+    travisStorage.setSubscriptions(subscriptions);
     this.setState({subscriptions});
   }
 
@@ -56,6 +58,7 @@ export default class App extends React.Component<AppProps, AppState> {
     }
     subscriptions = new Set(subscriptions);
     subscriptions.delete(slug);
+    travisStorage.setSubscriptions(subscriptions);
     this.setState({subscriptions});
   }
 

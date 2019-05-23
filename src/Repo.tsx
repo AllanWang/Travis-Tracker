@@ -1,7 +1,7 @@
 import React from 'react';
 import List, {ListItem, ListItemGraphic, ListItemMeta, ListItemText} from '@material/react-list';
 import Checkbox from '@material/react-checkbox';
-import {Repositories, Slug, TravisState} from "./travis_api";
+import {Repositories, Slug, TravisState} from "./travis-api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Caption} from "@material/react-typography";
 

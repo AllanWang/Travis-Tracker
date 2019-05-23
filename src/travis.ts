@@ -1,4 +1,4 @@
-import {Repositories} from "./travis_api";
+import {Repositories} from "./travis-api";
 import {JsonConvert} from "json2typescript";
 
 const jsonConvert = new JsonConvert();
