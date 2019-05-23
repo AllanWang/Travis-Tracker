@@ -47,7 +47,7 @@ export default class App extends React.Component<AppProps, AppState> {
     }
     subscriptions = new Set(subscriptions);
     subscriptions.add(slug);
-    travisStorage.setSubscriptions(subscriptions);
+    TravisStorage.setSubscriptions(subscriptions);
     this.setState({subscriptions});
   }
 
@@ -58,7 +58,7 @@ export default class App extends React.Component<AppProps, AppState> {
     }
     subscriptions = new Set(subscriptions);
     subscriptions.delete(slug);
-    travisStorage.setSubscriptions(subscriptions);
+    TravisStorage.setSubscriptions(subscriptions);
     this.setState({subscriptions});
   }
 
