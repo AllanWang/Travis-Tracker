@@ -5,7 +5,7 @@ import {travisRepos} from "./travis";
 import {Repositories} from "./travis_api";
 
 export interface SearchBarProps {
-  setRepos: (repos: Repositories) => void
+  setRepos: (repos: Repositories | null) => void
 }
 
 type SearchBarState = {

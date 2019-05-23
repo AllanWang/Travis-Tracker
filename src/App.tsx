@@ -14,7 +14,7 @@ interface AppProps {
 }
 
 interface AppState {
-  repos?: Repositories
+  repos?: Repositories | null
 }
 
 const testRepos: ListItemRepoProps[] = [
@@ -31,7 +31,7 @@ export default class App extends React.Component<AppProps, AppState> {
 
   state: AppState = {};
 
-  setRepos(repos: Repositories) {
+  setRepos(repos: Repositories | null) {
     this.setState({
       repos: repos
     })
@@ -55,7 +55,7 @@ export default class App extends React.Component<AppProps, AppState> {
             Learn React
           </a>
           <SearchBar setRepos={this.setRepos}/>
-          <Repos repos={repos ? repos.repositories.map(r => ({owner: r.owner.login, repo: r.name})) : testRepos}/>
+          <Repos repos={repos ? repos.repositories.map(r => ({owner: r.owner.login, repo: r.name})) : null}/>
           {/*<MaterialIcon icon='add' hasRipple={true}>Click Me </MaterialIcon>*/}
         </header>
       </div>

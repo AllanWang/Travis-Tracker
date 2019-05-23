@@ -5,7 +5,7 @@ import {TravisState} from "./travis_api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export interface ReposProps {
-  repos?: ListItemRepoProps[];
+  repos?: ListItemRepoProps[] | null;
 }
 
 const repoKey = ({owner, repo}: ListItemRepoProps) => `repo/${owner}/${repo}`;
@@ -16,11 +16,11 @@ export default class Repos extends React.Component<ReposProps> {
     selectedIndex: [1],
   };
 
-  renderNothing() {
-    return null
+  private renderEmpty() {
+    return (<span className={'no-results'}>No results found.</span>)
   }
 
-  renderRepos(repos: ListItemRepoProps[]) {
+  private renderRepos(repos: ListItemRepoProps[]) {
     const {selectedIndex} = this.state;
     return (
       <List
@@ -44,7 +44,7 @@ export default class Repos extends React.Component<ReposProps> {
     const {repos} = this.props;
 
     if (!repos) {
-      return this.renderNothing();
+      return this.renderEmpty();
     }
     return this.renderRepos(repos)
   }
