@@ -1,6 +1,80 @@
-import {Slug} from "./travis-api";
+import {Build, BuildInfo, Slug} from "./travis-api";
+import {JsonConvert} from "json2typescript";
 
-type TravisStorageKey = 'subscriptions';
+export type TravisStorageKey = 'subscriptions' | 'builds';
+
+const jsonConvert = new JsonConvert();
+
+export type TravisEntry<T> = {
+  key: TravisStorageKey
+  set: (value: T) => void
+  get: () => T
+}
+
+abstract class Entry<T> {
+  key: TravisStorageKey;
+
+  protected constructor(key: TravisStorageKey) {
+    this.key = key;
+  }
+
+  abstract serialize(value: T): string
+
+  abstract deserialize(value: string | null): T
+
+  set = (value: T): void => localStorage.setItem(this.key, this.serialize(value));
+
+  get = (): T => this.deserialize(localStorage.getItem(this.key));
+}
+
+class SubscriptionEntry extends Entry<Set<Slug>> {
+
+  constructor() {
+    super('subscriptions')
+  }
+
+  deserialize(value: string | null): Set<Slug> {
+    if (value === null) {
+      return new Set<Slug>();
+    }
+    return new Set<Slug>(JSON.parse(value));
+  }
+
+  serialize(value: Set<Slug>): string {
+    return JSON.stringify(Array.from(value));
+  }
+
+}
+
+class BuildEntry extends Entry<Map<Slug, BuildInfo>> {
+
+  constructor() {
+    super('builds')
+  }
+
+  deserialize(value: string | null): Map<Slug, BuildInfo> {
+    if (!value) {
+      return new Map<Slug, BuildInfo>();
+    }
+    try {
+      const v = jsonConvert.deserializeArray(JSON.parse(value), BuildInfo);
+      return v.reduce((m, b) => {
+        return m.set(b.build.repository.slug, b);
+      }, new Map<Slug, BuildInfo>())
+    } catch (e) {
+      return new Map<Slug, BuildInfo>();
+    }
+  }
+
+  serialize(value: Map<Slug, BuildInfo>): string {
+    try {
+      return JSON.stringify(jsonConvert.serializeArray(Array.from(value.values())));
+    } catch (e) {
+      return ''
+    }
+  }
+
+}
 
 export default class TravisStorage {
 
@@ -8,22 +82,8 @@ export default class TravisStorage {
     localStorage.clear();
   }
 
-  static getSubscriptions(): Set<Slug> {
-    const s = this.getItem('subscriptions', (s) => new Set<Slug>(JSON.parse(s)));
-    return s ? s : new Set<Slug>();
-  }
+  static subscriptions: TravisEntry<Set<Slug>> = new SubscriptionEntry();
 
-  static setSubscriptions(subscriptions: Set<Slug>): void {
-    this.setItem('subscriptions', JSON.stringify(Array.from(subscriptions)))
-  }
+  static builds: TravisEntry<Map<Slug, BuildInfo>> = new BuildEntry();
 
-  private static getItem<T>(key: TravisStorageKey, converter: (value: string) => T): T | null {
-    const value = localStorage.getItem(key);
-    return value ? converter(value) : null;
-  }
-
-  private static setItem(key: TravisStorageKey, value: string): void {
-    localStorage.setItem(key, value)
-  }
 }
-

@@ -6,8 +6,9 @@ import {library} from '@fortawesome/fontawesome-svg-core'
 import {fas} from '@fortawesome/free-solid-svg-icons'
 import {fab} from '@fortawesome/free-brands-svg-icons'
 import SearchBar from "./SearchBar";
-import {Build, Repositories, Slug} from "./travis-api";
+import {BuildInfo, Repositories, Slug} from "./travis-api";
 import TravisStorage from "./travis-storage";
+import {MapModifier, SetModifier} from "./state-modifier";
 
 library.add(fas, fab);
 
@@ -17,7 +18,7 @@ interface AppProps {
 interface AppState {
   repos?: Repositories | null
   subscriptions: Set<Slug>
-  builds: Record<Slug, Build>
+  builds: Map<Slug, BuildInfo>
 }
 
 export default class App extends React.Component<AppProps, AppState> {
@@ -25,13 +26,11 @@ export default class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
     this.setRepos = this.setRepos.bind(this);
-    this.addRepoSubscription = this.addRepoSubscription.bind(this);
-    this.removeRepoSubscription = this.removeRepoSubscription.bind(this);
   }
 
   state: AppState = {
-    subscriptions: TravisStorage.getSubscriptions(),
-    builds: {}
+    subscriptions: TravisStorage.subscriptions.get(),
+    builds: TravisStorage.builds.get()
   };
 
   private setRepos(repos: Repositories | null) {
@@ -40,27 +39,27 @@ export default class App extends React.Component<AppProps, AppState> {
     })
   }
 
-  private addRepoSubscription(slug: Slug) {
-    let subscriptions = this.state.subscriptions;
-    if (subscriptions.has(slug)) {
-      return
+  private subscriptionModifier = new (class extends SetModifier<Slug, AppState> {
+    get(): Set<string> {
+      return this.component.state.subscriptions;
     }
-    subscriptions = new Set(subscriptions);
-    subscriptions.add(slug);
-    TravisStorage.setSubscriptions(subscriptions);
-    this.setState({subscriptions});
-  }
 
-  private removeRepoSubscription(slug: Slug) {
-    let subscriptions = this.state.subscriptions;
-    if (!subscriptions.has(slug)) {
-      return
+    set(data: Set<string>): void {
+      this.component.setState({subscriptions: data});
+      TravisStorage.subscriptions.set(data);
     }
-    subscriptions = new Set(subscriptions);
-    subscriptions.delete(slug);
-    TravisStorage.setSubscriptions(subscriptions);
-    this.setState({subscriptions});
-  }
+  })(this);
+
+  private buildModifier = new (class extends MapModifier<Slug, BuildInfo, AppState> {
+    get(): Map<string, BuildInfo> {
+      return this.component.state.builds;
+    }
+
+    set(data: Map<string, BuildInfo>): void {
+      this.component.setState({builds: data});
+      TravisStorage.builds.set(data);
+    }
+  })(this);
 
   render() {
     const {repos, subscriptions} = this.state;
@@ -80,8 +79,8 @@ export default class App extends React.Component<AppProps, AppState> {
             Learn React
           </a>
           <SearchBar setRepos={this.setRepos}/>
-          <Repos repos={repos} subscriptions={subscriptions} addRepoSubscription={this.addRepoSubscription}
-                 removeRepoSubscription={this.removeRepoSubscription}/>
+          <Repos repos={repos} subscriptions={subscriptions} buildModifier={this.buildModifier}
+                 subscriptionModifier={this.subscriptionModifier}/>
         </header>
       </div>
     );

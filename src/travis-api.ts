@@ -131,3 +131,10 @@ export class Build extends TravisBase {
   updatedAt!: DateTime
 }
 
+@JsonObject("BuildInfo")
+export class BuildInfo {
+  @JsonProperty("build", Build)
+  build!: Build;
+  @JsonProperty("fetch_time", Number)
+  fetchTime!: number;
+}

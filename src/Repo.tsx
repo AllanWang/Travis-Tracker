@@ -1,15 +1,16 @@
 import React from 'react';
 import List, {ListItem, ListItemGraphic, ListItemMeta, ListItemText} from '@material/react-list';
 import Checkbox from '@material/react-checkbox';
-import {Repositories, Slug, TravisState} from "./travis-api";
+import {BuildInfo, Repositories, Slug, TravisState} from "./travis-api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Caption} from "@material/react-typography";
+import {MapModifier, SetModifier} from "./state-modifier";
 
 export interface ReposProps {
   repos?: Repositories | null;
   subscriptions: Set<Slug>;
-  addRepoSubscription: (slug: Slug) => void;
-  removeRepoSubscription: (slug: Slug) => void;
+  buildModifier: MapModifier<Slug, BuildInfo>;
+  subscriptionModifier: SetModifier<Slug>
 }
 
 export interface ReposState {
@@ -26,7 +27,7 @@ export default class Repos extends React.Component<ReposProps, ReposState> {
 
 
   private renderRepos(repoProps: ListItemRepoProps[]) {
-    const {addRepoSubscription, removeRepoSubscription, subscriptions} = this.props;
+    const {subscriptionModifier, subscriptions} = this.props;
     const selectedIndex: number[] = [];
     repoProps.forEach((r, i) => {
       if (subscriptions.has(r.slug)) {
@@ -38,12 +39,13 @@ export default class Repos extends React.Component<ReposProps, ReposState> {
         checkboxList
         selectedIndex={selectedIndex}
         handleSelect={(activatedItemIndex, allSelected) => {
+          const slug = repoProps[activatedItemIndex].slug;
           // While type is MDCListIndex, it appears to always be an array for checkbox lists
           // See isIndexValid_(index: MDCListIndex)
           if ((allSelected as number[]).includes(activatedItemIndex)) {
-            addRepoSubscription(repoProps[activatedItemIndex].slug)
+            subscriptionModifier.add(slug)
           } else {
-            removeRepoSubscription(repoProps[activatedItemIndex].slug)
+            subscriptionModifier.remove(slug)
           }
           this.setState({selectedIndex: allSelected})
         }}
