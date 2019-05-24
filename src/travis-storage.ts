@@ -3,7 +3,7 @@ import {JsonConvert} from "json2typescript";
 import StringUnion from "./string-union";
 import {TravisPanel} from "./const";
 
-export const TravisStorageKey = StringUnion('subscriptions', 'builds', 'panel');
+export const TravisStorageKey = StringUnion('subscriptions', 'builds', 'panel', 'repo-search');
 export type TravisStorageKey = typeof TravisStorageKey.type;
 
 const jsonConvert = new JsonConvert();
@@ -44,6 +44,21 @@ class PanelEntry extends Entry<TravisPanel> {
   }
 
   serialize(value: TravisPanel): string {
+    return value;
+  }
+}
+
+class StringEntry extends Entry<string> {
+
+  constructor(key: TravisStorageKey) {
+    super(key)
+  }
+
+  deserialize(value: string | null): string {
+    return value ? value : '';
+  }
+
+  serialize(value: string): string {
     return value;
   }
 }
@@ -107,6 +122,8 @@ export default class TravisStorage {
 
   static builds: TravisEntry<Map<Slug, BuildInfo>> = new BuildEntry();
 
-  static panel: TravisEntry<TravisPanel> = new PanelEntry()
+  static panel: TravisEntry<TravisPanel> = new PanelEntry();
+
+  static repoSearch: TravisEntry<string> = new StringEntry('repo-search');
 
 }

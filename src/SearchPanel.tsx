@@ -10,6 +10,7 @@ import Checkbox from "@material/react-checkbox";
 import TextField, {HelperText, Input} from "@material/react-text-field";
 import MaterialIcon from "@material/react-material-icon";
 import {RepoListItemText} from "./RepoComponents";
+import TravisStorage from "./travis-storage";
 
 
 interface SearchPanelProps {
@@ -46,22 +47,28 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
   input: React.Ref<HTMLInputElement> = null;
   state: SearchBarState = {
+    value: TravisStorage.repoSearch.get(),
     searchResults: {}
   };
 
   private async search() {
     let {value, searchKey} = this.state;
     value = value ? value.trim() : undefined;
+    TravisStorage.repoSearch.set(value ? value : '');
     if (!value || searchKey === value) {
       return;
     }
     this.setState({searchKey: value});
-    if (value.includes('/')) {
-      const repo = await travisRepo(value);
-      this.props.setRepos(repo ? Repositories.fromSingle(repo) : null)
-    } else {
-      const repos = await travisRepos(value);
-      this.props.setRepos(repos);
+    try {
+      if (value.includes('/')) {
+        const repo = await travisRepo(value);
+        this.props.setRepos(repo ? Repositories.fromSingle(repo) : null)
+      } else {
+        const repos = await travisRepos(value);
+        this.props.setRepos(repos);
+      }
+    } catch (e) {
+      console.log('Err', e)
     }
   }
 

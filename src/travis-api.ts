@@ -173,3 +173,9 @@ export class Builds {
   @JsonProperty("builds", [Build])
   builds!: Build[]
 }
+
+export type TravisError = {
+  error_type?: string
+  error_message?: string
+  resource_type?: string
+}
