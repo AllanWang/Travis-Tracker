@@ -32,21 +32,37 @@
     right: 1rem;
   }
 
-  .mdc-list-item__meta .mdc-list-item__primary-text {
-    font-size: 1rem;
-  }
 
-  .build-description {
-    padding-top: 4px;
-    display: flex;
-    align-items: center;
+  .travis-build-list {
 
-    i {
-      padding-right: 4px;
+    .mdc-list-item__meta {
+      text-align: end;
+
+      .mdc-list-item__primary-text {
+        font-size: 1rem;
+      }
     }
 
-    .material-icons {
-      font-size: 16px;
+    .mdc-list-item {
+      height: 84px;
+    }
+
+    .mdc-list-item__secondary-text::before {
+      content: none;
+    }
+
+    .build-description {
+      padding-top: 8px;
+      display: flex;
+      align-items: center;
+
+      i {
+        padding-right: 4px;
+      }
+
+      .material-icons {
+        font-size: 16px;
+      }
     }
   }
 

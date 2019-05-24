@@ -75,7 +75,7 @@ class Repos extends React.Component<ReposProps, ReposState> {
     }
     builds.sort((a, b) => this.buildCompareVal(b) - this.buildCompareVal(a));
     return (
-      <List twoLine> {builds
+      <List twoLine className='travis-build-list'> {builds
         .map(b => <ListItemBuild buildInfo={b} {...this.props} key={b.build.repository.slug}/>)}
       </List>
     );
@@ -117,13 +117,57 @@ class ListItemBuild extends React.Component<ListItemBuildProps> {
     this.loadBuild()
   }
 
-  durationString(duration: number): string {
+  private static durationString(duration: number): string {
     const seconds = duration % 60 === 0 ? null : `${duration % 60} sec`;
     duration = Math.floor(duration / 60);
     const minutes = duration % 60 === 0 ? null : `${duration % 60} min`;
     duration = Math.floor(duration / 60);
     const hours = duration === 0 ? null : `${duration} hrs`;
     return [hours, minutes, seconds].filter(s => s !== null).join(' ');
+  }
+
+  /**
+   * TODO find a library that does this?
+   */
+  private static agoString(date: number): string {
+    let diff = Date.now() - date;
+    diff = Math.floor(diff / 1000);
+    if (diff < 20) {
+      return 'a few seconds ago'
+    }
+    if (diff < 60) {
+      return `${diff} seconds ago`
+    }
+    diff = Math.floor(diff / 60);
+    if (diff < 60) {
+      return `${diff} minutes ago`
+    }
+    diff = Math.floor(diff / 60);
+    if (diff <= 1) {
+      return 'about an hour ago'
+    }
+    if (diff < 24) {
+      return `about ${diff} hours ago`
+    }
+    diff = Math.floor(diff / 24);
+    if (diff <= 1) {
+      return 'a day ago'
+    }
+    if (diff < 30) {
+      return `${diff} days ago`
+    }
+    diff = Math.floor(diff / 30.416);
+    if (diff <= 1) {
+      return 'about a month ago'
+    }
+    if (diff < 12) {
+      return `${diff} months ago`
+    }
+    diff = Math.floor(diff / 12);
+    if (diff <= 1) {
+      return 'about a year ago'
+    }
+    return `${diff} years ago`
   }
 
   render() {
@@ -139,12 +183,11 @@ class ListItemBuild extends React.Component<ListItemBuildProps> {
                       href={`https://travis-ci.com/${slug}`}>{slug}</a>;
 
     const durationEl = b.duration ? <span className='build-description'>
-      <MaterialIcon icon={'access_time'}/>Duration: {this.durationString(b.duration)}
+      <MaterialIcon icon={'access_time'}/>Duration: {ListItemBuild.durationString(b.duration)}
     </span> : null;
 
-    const finishedEl = b.finishedAt ? <span className='build-description'>
-      <MaterialIcon icon={'calendar_today'}/>Finished: {b.finishedAt.toISOString()}
-    </span> : null;
+    const finishedEl = <span className='build-description'>{b.finishedAt ? [<MaterialIcon
+      icon={'check'}/>, ListItemBuild.agoString(b.finishedAt.getTime())] : '--'}  </span>;
 
     const buildNumEl = <span># <a className={classNames('build-theme', 'hover-underline')}
                                   {...blankTarget}
