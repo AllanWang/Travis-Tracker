@@ -186,7 +186,7 @@ class ListItemBuild extends React.Component<ListItemBuildProps> {
     </span> : null;
 
     const finishedEl = <span className='build-description'>{b.finishedAt ? [<MaterialIcon
-      icon={'check'}/>, ListItemBuild.agoString(b.finishedAt.getTime())] : '--'}  </span>;
+      icon={'check'} key='finished-check-icon'/>, ListItemBuild.agoString(b.finishedAt.getTime())] : '--'}</span>;
 
     const buildNumEl = <span># <Ablank className={classNames('build-theme', 'hover-underline')}
                                        href={`https://travis-ci.com/${b.repository.slug}/builds/${b.id}`}>{b.number}</Ablank>
