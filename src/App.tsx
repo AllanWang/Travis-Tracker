@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import './App.scss';
 import {library} from '@fortawesome/fontawesome-svg-core'
 import {fas} from '@fortawesome/free-solid-svg-icons'
@@ -10,6 +10,7 @@ import SearchPanel from "./SearchPanel";
 import TravisToolbar from "./TravisToolbar";
 import {TopAppBarFixedAdjust} from "@material/react-top-app-bar";
 import {TravisPanel} from "./const";
+import MainPanel from "./MainPanel";
 
 library.add(fas, fab);
 
@@ -33,7 +34,7 @@ export default class App extends React.Component<AppProps, AppState> {
 
   state: AppState = {
     repos: null,
-    panel: 'search',
+    panel: TravisStorage.panel.get(),
     subscriptions: TravisStorage.subscriptions.get(),
     builds: TravisStorage.builds.get(),
     buildsFetching: new Set<Slug>()
@@ -77,17 +78,33 @@ export default class App extends React.Component<AppProps, AppState> {
     }
   })(this);
 
+  private panel(): ReactNode {
+    const collection = {
+      ...this.state,
+      ...this.props,
+      setRepos: this.setRepos,
+      buildModifier: this.buildModifier,
+      subscriptionModifier: this.subscriptionModifier,
+      buildFetchModifier: this.buildFetchModifier
+    };
+    switch (this.state.panel) {
+      case "main":
+        return <MainPanel {...collection} />;
+      case "search":
+        return <SearchPanel {...collection} />;
+    }
+  }
+
   render() {
-    const {repos, panel, subscriptions} = this.state;
+    const {panel} = this.state;
     return (
       <div className="App">
-        <TravisToolbar panel={panel} setPanel={() => {
+        <TravisToolbar panel={panel} setPanel={p => {
+          this.setState({panel: p});
+          TravisStorage.panel.set(p);
         }}/>
         <TopAppBarFixedAdjust>
-          <SearchPanel setRepos={this.setRepos} repos={repos} subscriptions={subscriptions}
-                       buildModifier={this.buildModifier}
-                       subscriptionModifier={this.subscriptionModifier}
-                       buildFetchModifier={this.buildFetchModifier}/>
+          {this.panel()}
         </TopAppBarFixedAdjust>
       </div>
     );

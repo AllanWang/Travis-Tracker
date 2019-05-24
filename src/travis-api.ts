@@ -1,21 +1,18 @@
 import {JsonConverter, JsonCustomConvert, JsonObject, JsonProperty} from "json2typescript";
+import StringUnion from "./string-union";
 
 export type Slug = string
 
 export type DateTime = string
 
-export type TravisState = 'started' | 'passed' | 'errored' | 'failed' | 'canceled'
+export const TravisState = StringUnion('started', 'passed', 'errored', 'failed', 'canceled');
+export type TravisState = typeof TravisState.type;
 
 @JsonConverter
 class TravisStateConverter implements JsonCustomConvert<TravisState> {
   deserialize(data: any): TravisState {
-    switch (data) {
-      case 'started':
-      case 'passed':
-      case 'errored':
-      case 'failed':
-      case 'canceled':
-        return data;
+    if (typeof data === 'string' && TravisState.guard(data)) {
+      return data
     }
     throw new Error(`Bad travis state ${data}`)
   }

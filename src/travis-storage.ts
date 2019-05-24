@@ -1,7 +1,10 @@
 import {BuildInfo, Slug} from "./travis-api";
 import {JsonConvert} from "json2typescript";
+import StringUnion from "./string-union";
+import {TravisPanel} from "./const";
 
-export type TravisStorageKey = 'subscriptions' | 'builds';
+export const TravisStorageKey = StringUnion('subscriptions', 'builds', 'panel');
+export type TravisStorageKey = typeof TravisStorageKey.type;
 
 const jsonConvert = new JsonConvert();
 
@@ -25,6 +28,24 @@ abstract class Entry<T> {
   set = (value: T): void => localStorage.setItem(this.key, this.serialize(value));
 
   get = (): T => this.deserialize(localStorage.getItem(this.key));
+}
+
+class PanelEntry extends Entry<TravisPanel> {
+
+  constructor() {
+    super('panel');
+  }
+
+  deserialize(value: string | null): TravisPanel {
+    if (value && TravisPanel.guard(value)) {
+      return value
+    }
+    return 'main';
+  }
+
+  serialize(value: TravisPanel): string {
+    return value;
+  }
 }
 
 class SubscriptionEntry extends Entry<Set<Slug>> {
@@ -85,5 +106,7 @@ export default class TravisStorage {
   static subscriptions: TravisEntry<Set<Slug>> = new SubscriptionEntry();
 
   static builds: TravisEntry<Map<Slug, BuildInfo>> = new BuildEntry();
+
+  static panel: TravisEntry<TravisPanel> = new PanelEntry()
 
 }
