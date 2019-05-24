@@ -1,14 +1,12 @@
-import {Builds, Repositories, Slug} from "./travis-api";
+import {Builds, Repositories, Repository, Slug} from "./travis-api";
 import {JsonConvert} from "json2typescript";
 
 const jsonConvert = new JsonConvert();
 
-const travisCom = "https://api.travis-ci.com";
-
 /**
  * For testing, see https://developer.travis-ci.com/explore/#explorer
  */
-const travisFetch = (segment: string, init?: RequestInit, log?: boolean): Promise<any> => fetch(`${travisCom}/${segment}`, {
+const travisFetch = (segment: string, init?: RequestInit, log?: boolean): Promise<any> => fetch(`https://api.travis-ci.com/${segment}`, {
   ...init,
   headers: {
     'Travis-API-Version': '3'
@@ -20,6 +18,11 @@ const travisFetch = (segment: string, init?: RequestInit, log?: boolean): Promis
   }
   return json;
 });
+
+export const travisRepo = async (slug: Slug): Promise<Repository | null> =>
+  travisFetch(`repo/${encodeURIComponent(slug)}`, {
+    method: 'GET'
+  }).then(data => jsonConvert.deserializeObject(data, Repository));
 
 export const travisRepos = async (owner: string): Promise<Repositories | null> =>
   travisFetch(`owner/${owner}/repos?sort_by=default_branch.last_build:desc&limit=100`, {

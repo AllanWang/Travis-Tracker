@@ -30,6 +30,7 @@ export default class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
     this.setRepos = this.setRepos.bind(this);
+    this.setPanel = this.setPanel.bind(this);
   }
 
   state: AppState = {
@@ -44,6 +45,11 @@ export default class App extends React.Component<AppProps, AppState> {
     this.setState({
       repos: repos
     })
+  }
+
+  private setPanel(p: TravisPanel) {
+    this.setState({panel: p});
+    TravisStorage.panel.set(p);
   }
 
   private subscriptionModifier = new (class extends SetModifier<Slug, AppState> {
@@ -85,7 +91,8 @@ export default class App extends React.Component<AppProps, AppState> {
       setRepos: this.setRepos,
       buildModifier: this.buildModifier,
       subscriptionModifier: this.subscriptionModifier,
-      buildFetchModifier: this.buildFetchModifier
+      buildFetchModifier: this.buildFetchModifier,
+      setPanel: this.setPanel
     };
     switch (this.state.panel) {
       case "main":
@@ -99,10 +106,7 @@ export default class App extends React.Component<AppProps, AppState> {
     const {panel} = this.state;
     return (
       <div className="App">
-        <TravisToolbar panel={panel} setPanel={p => {
-          this.setState({panel: p});
-          TravisStorage.panel.set(p);
-        }}/>
+        <TravisToolbar panel={panel} setPanel={this.setPanel}/>
         <TopAppBarFixedAdjust>
           {this.panel()}
         </TopAppBarFixedAdjust>

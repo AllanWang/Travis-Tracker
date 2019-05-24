@@ -7,6 +7,7 @@
 @import '~@material/react-card/index.scss';
 @import '~@material/react-text-field/index.scss';
 @import '~@material/react-typography/index.scss';
+@import '~@material/react-fab/index.scss';
 @import "Travis";
 
 // refer to element in Javascript portion below
@@ -17,18 +18,41 @@
   overflow: hidden;
 }
 
-.App {
-  min-height: 100vh;
-}
+//.App {
+//  min-height: 100vh;
+//}
 
 .MainPanel {
-  text-align: center;
   display: flex;
   flex-direction: column;
+
+  .add-fab {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .mdc-list-item__meta .mdc-list-item__primary-text {
+    font-size: 1rem;
+  }
+
+  .build-description {
+    padding-top: 4px;
+    display: flex;
+    align-items: center;
+
+    i {
+      padding-right: 4px;
+    }
+
+    .material-icons {
+      font-size: 16px;
+    }
+  }
+
 }
 
 .SearchPanel {
-  text-align: center;
   display: flex;
   flex-direction: column;
 }

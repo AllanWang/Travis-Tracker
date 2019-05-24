@@ -3,8 +3,6 @@ import StringUnion from "./string-union";
 
 export type Slug = string
 
-export type DateTime = string
-
 export const TravisState = StringUnion('started', 'passed', 'errored', 'failed', 'canceled');
 export type TravisState = typeof TravisState.type;
 
@@ -19,6 +17,21 @@ class TravisStateConverter implements JsonCustomConvert<TravisState> {
 
   serialize(data: TravisState): any {
     return data;
+  }
+
+}
+
+@JsonConverter
+class DateConverter implements JsonCustomConvert<Date> {
+  deserialize(data: any): Date {
+    if (typeof data === 'string') {
+      return new Date(Date.parse(data));
+    }
+    throw new Error(`Bad date ${data}`)
+  }
+
+  serialize(data: Date): any {
+    return data.toISOString()
   }
 
 }
@@ -70,7 +83,13 @@ export class Repository extends RepositoryMinimal {
 @JsonObject("Repositories")
 export class Repositories {
   @JsonProperty("repositories", [Repository])
-  repositories!: Repository[]
+  repositories!: Repository[];
+
+  static fromSingle(repo: Repository): Repositories {
+    const r = new Repositories();
+    r.repositories = [repo];
+    return r;
+  }
 }
 
 /**
@@ -95,8 +114,8 @@ export class Commit extends TravisBase {
   message?: string;
   @JsonProperty("compare_url", String)
   compareUrl!: string;
-  @JsonProperty("committed_at", String)
-  committedAt!: DateTime;
+  @JsonProperty("committed_at", DateConverter)
+  committedAt!: Date;
 }
 
 /**
@@ -118,10 +137,10 @@ export class Build extends TravisBase {
   pullRequestTitle?: string;
   @JsonProperty("pull_request_number", String, true)
   pullRequestNumber?: string;
-  @JsonProperty("started_at", String, true)
-  startedAt?: DateTime;
-  @JsonProperty("finished_at", String, true)
-  finished_at?: DateTime;
+  @JsonProperty("started_at", DateConverter, true)
+  startedAt?: Date;
+  @JsonProperty("finished_at", DateConverter, true)
+  finishedAt?: Date;
   @JsonProperty("private", Boolean)
   private!: boolean;
   @JsonProperty("repository", RepositoryMinimal)
@@ -134,8 +153,8 @@ export class Build extends TravisBase {
   commit!: Commit;
   @JsonProperty("created_by", User)
   createdBy!: User;
-  @JsonProperty("updated_at", String)
-  updatedAt!: DateTime
+  @JsonProperty("updated_at", DateConverter)
+  updatedAt!: Date
 }
 
 @JsonObject("BuildInfo")

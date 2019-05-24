@@ -4,10 +4,10 @@ import {BuildInfo, Repositories, Slug} from "./travis-api";
 import {MapModifier, SetModifier} from "./state-modifier";
 import {Caption} from "@material/react-typography";
 import List, {ListItem, ListItemGraphic, ListItemMeta} from "@material/react-list";
-import {travisBuilds, travisRepos} from "./travis";
+import {travisBuilds, travisRepo, travisRepos} from "./travis";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Checkbox from "@material/react-checkbox";
-import TextField, {Input} from "@material/react-text-field";
+import TextField, {HelperText, Input} from "@material/react-text-field";
 import MaterialIcon from "@material/react-material-icon";
 import {RepoListItemText} from "./RepoComponents";
 
@@ -56,16 +56,21 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
       return;
     }
     this.setState({searchKey: value});
-    const repos = await travisRepos(value);
-    this.props.setRepos(repos);
+    if (value.includes('/')) {
+      const repo = await travisRepo(value);
+      this.props.setRepos(repo ? Repositories.fromSingle(repo) : null)
+    } else {
+      const repos = await travisRepos(value);
+      this.props.setRepos(repos);
+    }
   }
 
   render() {
-
     const {value} = this.state;
     return (
       <TextField label='Repo Search'
         // leadingIcon={<MaterialIcon icon='search'/>}
+                 helperText={<HelperText>Enter [username] or [username/repo]</HelperText>}
                  onTrailingIconSelect={() => this.setState({value: ''})}
                  trailingIcon={<MaterialIcon role='button' icon='close'/>}>
         <Input
