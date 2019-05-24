@@ -72,7 +72,9 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
         // leadingIcon={<MaterialIcon icon='search'/>}
                  helperText={<HelperText>Enter [username] or [username/repo]</HelperText>}
                  onTrailingIconSelect={() => this.setState({value: ''})}
-                 trailingIcon={<MaterialIcon role='button' icon='close'/>}>
+                 trailingIcon={<MaterialIcon role='button'
+                                             hasRipple={false /* TODO currently ripple renders as all black */}
+                                             icon='close'/>}>
         <Input
           value={value}
           onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => {

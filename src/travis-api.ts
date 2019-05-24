@@ -40,7 +40,7 @@ class TravisBase {
   @JsonProperty('id', Number)
   id!: number;
   @JsonProperty('@href', String, true)
-  href!: string;
+  href?: string;
 }
 
 /**

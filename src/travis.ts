@@ -22,7 +22,7 @@ const travisFetch = (segment: string, init?: RequestInit, log?: boolean): Promis
 export const travisRepo = async (slug: Slug): Promise<Repository | null> =>
   travisFetch(`repo/${encodeURIComponent(slug)}`, {
     method: 'GET'
-  }).then(data => jsonConvert.deserializeObject(data, Repository));
+  }).then(data => data.slug ? jsonConvert.deserializeObject(data, Repository) : null);
 
 export const travisRepos = async (owner: string): Promise<Repositories | null> =>
   travisFetch(`owner/${owner}/repos?sort_by=default_branch.last_build:desc&limit=100`, {
