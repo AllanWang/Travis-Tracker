@@ -10,6 +10,7 @@ import {Fab} from "@material/react-fab";
 import MaterialIcon from "@material/react-material-icon";
 import {TravisPanel} from "./const";
 import classNames from "classnames";
+import {Ablank} from "./components";
 
 
 interface MainPanelProps {
@@ -177,10 +178,8 @@ class ListItemBuild extends React.Component<ListItemBuildProps> {
 
     const slug = b.repository.slug;
 
-    const blankTarget = {target: '_blank', rel: 'noopener noreferrer'};
-
-    const buildA = <a className={classNames('build-theme', 'hover-underline')} {...blankTarget}
-                      href={`https://travis-ci.com/${slug}`}>{slug}</a>;
+    const buildA = <Ablank className={classNames('build-theme', 'hover-underline')}
+                           href={`https://travis-ci.com/${slug}`}>{slug}</Ablank>;
 
     const durationEl = b.duration ? <span className='build-description'>
       <MaterialIcon icon={'access_time'}/>Duration: {ListItemBuild.durationString(b.duration)}
@@ -189,16 +188,15 @@ class ListItemBuild extends React.Component<ListItemBuildProps> {
     const finishedEl = <span className='build-description'>{b.finishedAt ? [<MaterialIcon
       icon={'check'}/>, ListItemBuild.agoString(b.finishedAt.getTime())] : '--'}  </span>;
 
-    const buildNumEl = <span># <a className={classNames('build-theme', 'hover-underline')}
-                                  {...blankTarget}
-                                  href={`https://travis-ci.com/${b.repository.slug}/builds/${b.id}`}>{b.number}</a>
+    const buildNumEl = <span># <Ablank className={classNames('build-theme', 'hover-underline')}
+                                       href={`https://travis-ci.com/${b.repository.slug}/builds/${b.id}`}>{b.number}</Ablank>
     </span>;
 
     return (
       <ListItem className={buildInfo ? `travis-build-${buildInfo.build.state}` : undefined}>
         <ListItemGraphic className={'build-theme'}
-                         graphic={<a {...blankTarget} href={`https://github.com/${slug}`}><FontAwesomeIcon
-                           icon={['fab', 'github']}/></a>}/>
+                         graphic={<Ablank href={`https://github.com/${slug}`}><FontAwesomeIcon
+                           icon={['fab', 'github']}/></Ablank>}/>
         <ListItemText primaryText={buildA} secondaryText={durationEl}/>
         <ListItemMeta meta={<ListItemText primaryText={buildNumEl} secondaryText={finishedEl}/>}/>
       </ListItem>
